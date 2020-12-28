@@ -1,18 +1,30 @@
+const cheerio = require('cheerio');
+const fetch = require('node-fetch');
 const Article = require('../model/article');
 
-exports.create = async (req, res) => {
-  const article = new Article({ url: req.body.url });
+exports.create = async function (req, res) {
+  const html = await fetch(req.body.url).then((resp) => resp.text());
+  const $ = cheerio.load(html);
+
+  const article = new Article({
+    url: req.body.url,
+    title: $('meta[name="title"]').attr('content') || null,
+    description: $('meta[name="description"]').attr('content') || null,
+    image: $('meta[property="og:image"]').attr('content') || null,
+  });
+
   article.save()
     .then((data) => {
-      res.status(200).json({
-        message: 'Save successfully',
-        article: data,
-      });
+      res.status(200)
+        .json({
+          message: 'Save successfully',
+          article: data,
+        });
     })
-    .catch((err) => {
+    .catch((error) => {
       res.status(500).json({
         message: 'Fail!',
-        error: err.message,
+        error: error.message,
       });
     });
 };
