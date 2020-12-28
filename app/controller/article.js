@@ -1,8 +1,7 @@
 const Article = require('../model/article');
 
-exports.create = (req, res) => {
+exports.create = async (req, res) => {
   const article = new Article({ url: req.body.url });
-
   article.save()
     .then((data) => {
       res.status(200).json({
@@ -22,15 +21,14 @@ exports.getAll = (req, res) => {
   Article.find({})
     .then((articles) => {
       res.status(200).json({
-        numberOfArticles: articles.length,
         articles,
-      })
-        .catch((err) => {
-          res.staus(500).json({
-            message: 'Error',
-            error: err,
-          });
-        });
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        message: 'Error',
+        error: err,
+      });
     });
 };
 
