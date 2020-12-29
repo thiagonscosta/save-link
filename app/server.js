@@ -24,6 +24,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const PORT = process.env.PORT || 9090;
 
 require('./route/article')(app);
+require('./route/folder')(app);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

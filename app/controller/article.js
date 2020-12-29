@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 const Article = require('../model/article');
 const Folder = require('../model/folder');
 
-exports.create = async (req, res) => {
+exports.createArticle = async (req, res) => {
   const html = await fetch(req.body.url).then((resp) => resp.text());
   const $ = cheerio.load(html);
 
@@ -31,11 +31,12 @@ exports.create = async (req, res) => {
 
   if (req.params.folderId) {
     const fId = req.params.folderId;
-    Folder.findByIdAndUpdate(fId, { $push: { articles: article.id } }, { new: true });
+    // eslint-disable-next-line no-underscore-dangle
+    Folder.findByIdAndUpdate(fId, { $push: { articles: article._id } }, { new: true });
   }
 };
 
-exports.getAll = (req, res) => {
+exports.getAllArticles = (req, res) => {
   Article.find({})
     .then((articles) => {
       res.status(200).json({
@@ -50,7 +51,7 @@ exports.getAll = (req, res) => {
     });
 };
 
-exports.getOne = (req, res) => {
+exports.getOneArticle = (req, res) => {
   Article.findById(req.params.id)
     .then((article) => {
       res.status(200).json({
@@ -72,27 +73,10 @@ exports.deleteArticle = (req, res) => {
     });
 };
 
-exports.deleteAll = (req, res) => {
+exports.deleteAllArticles = (req, res) => {
   Article.deleteMany({})
     .then(() => {
       res.status(200);
-    })
-    .catch((err) => {
-      res.status(500).json({
-        message: 'Error',
-        error: err,
-      });
-    });
-};
-
-exports.createFolder = (req, res) => {
-  const folder = new Folder({ name: req.body.name });
-  folder.save()
-    .then((data) => {
-      res.status(201).json({
-        message: 'Save successfully',
-        folder: data,
-      });
     })
     .catch((err) => {
       res.status(500).json({

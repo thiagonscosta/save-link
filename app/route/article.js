@@ -1,7 +1,7 @@
 const articleController = require('../controller/article.js');
 
-module.exports = function (app) {
-  app.post('/api/article/create/:folderId?', articleController.create);
-  app.get('/api/article/all', articleController.getAll);
-  app.delete('/api/article/deleteall', articleController.deleteAll);
+module.exports = (app) => {
+  app.post('/api/article/create/:folderId?', articleController.createArticle);
+  app.get('/api/article/all', articleController.getAllArticles);
+  app.delete('/api/article/deleteall', articleController.deleteAllArticles);
 };
