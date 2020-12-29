@@ -13,6 +13,10 @@ const schema = mongoose.Schema({
   image: {
     type: String,
   },
+}, {
+  timestamps: {
+    createdAt: 'created_at',
+  },
 });
 
 module.exports = mongoose.model('Article', schema);
